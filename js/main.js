@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const mobileDrawer = document.getElementById('nav-mobile-drawer');
 
   function closeMobileMenu() {
+    if (!hamburger) return;
     hamburger.classList.remove('is-open');
     hamburger.setAttribute('aria-expanded', 'false');
     mobileDrawer.classList.remove('is-open');
@@ -34,6 +35,20 @@ document.addEventListener('DOMContentLoaded', () => {
     badge.className = 'hours-today-badge';
     badge.textContent = 'Today';
     todayRow.appendChild(badge);
+  }
+
+  // ─── Location tabs ───────────────────────────────────────────────────────────
+  const locTabsEl = document.getElementById('loc-tabs');
+  if (locTabsEl) {
+    locTabsEl.addEventListener('click', e => {
+      const tab = e.target.closest('[data-loc]');
+      if (!tab) return;
+      const key = tab.dataset.loc;
+      locTabsEl.querySelectorAll('.menu-tab').forEach(t =>
+        t.classList.toggle('menu-tab--active', t.dataset.loc === key));
+      document.querySelectorAll('.loc-panel').forEach(p =>
+        p.id === `loc-panel-${key}` ? p.removeAttribute('hidden') : p.setAttribute('hidden', ''));
+    });
   }
 
   // ─── Menu overlay ────────────────────────────────────────────────────────────
@@ -102,6 +117,30 @@ document.addEventListener('DOMContentLoaded', () => {
     applySuccess.removeAttribute('hidden');
   });
 
+  // ─── Loyalty modal ────────────────────────────────────────────────────────────
+  const loyaltyModal   = document.getElementById('loyalty-modal');
+  const loyaltyForm    = document.getElementById('loyalty-form');
+  const loyaltySuccess = document.getElementById('loyalty-success');
+
+  function openLoyalty() {
+    loyaltyModal.removeAttribute('hidden');
+    document.body.style.overflow = 'hidden';
+    closeMobileMenu();
+  }
+
+  function closeLoyalty() {
+    loyaltyModal.setAttribute('hidden', '');
+    document.body.style.overflow = '';
+  }
+
+  loyaltyModal.addEventListener('click', e => { if (e.target === loyaltyModal) closeLoyalty(); });
+
+  loyaltyForm.addEventListener('submit', e => {
+    e.preventDefault();
+    loyaltyForm.setAttribute('hidden', '');
+    loyaltySuccess.removeAttribute('hidden');
+  });
+
   // ─── Contact form ─────────────────────────────────────────────────────────────
   const contactForm    = document.getElementById('contact-form');
   const contactSuccess = document.getElementById('contact-success');
@@ -123,6 +162,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (action === 'close-menu')     { closeMenu(); }
     if (action === 'open-apply')     { e.preventDefault(); openApply(); }
     if (action === 'close-apply')    { closeApply(); }
+    if (action === 'open-loyalty')   { e.preventDefault(); openLoyalty(); }
+    if (action === 'close-loyalty')  { closeLoyalty(); }
     if (action === 'toggle-mobile')  {
       const isOpen = hamburger.classList.toggle('is-open');
       hamburger.setAttribute('aria-expanded', String(isOpen));
@@ -139,8 +180,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // ─── Keyboard: Escape closes overlays ────────────────────────────────────────
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
-    if (!menuOverlay.hidden)  closeMenu();
-    if (!applyModal.hidden)   closeApply();
+    if (!menuOverlay.hidden)   closeMenu();
+    if (!applyModal.hidden)    closeApply();
+    if (!loyaltyModal.hidden)  closeLoyalty();
   });
 
 });
