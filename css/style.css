@@ -1008,6 +1008,21 @@ html {
   margin-bottom: 24px;
 }
 
+.coming-soon-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-cinnamon);
+  background: color-mix(in srgb, var(--color-cinnamon) 12%, transparent);
+  border-radius: var(--radius-pill);
+  padding: 2px 7px;
+  margin-left: 5px;
+  vertical-align: middle;
+  line-height: 1.6;
+}
+
 .loc-map {
   margin-top: 4px;
   border-radius: var(--radius-lg);
